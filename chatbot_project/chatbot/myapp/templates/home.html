@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block src %}
+<script>
+    $(function() {
+        $('#b-bot').click(function(){
+            $('#modal1').modal('show')
+        });
+
+        $('#r-bot').click(function(){
+            $('#modal2').modal('show')
+        });
+    })
+</script>
+<style>
+    #modal1{
+        position: fixed;
+        top: 80%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+
+    #modal2{
+        position: fixed;
+        top: 80%;
+        left: 50%;
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+    h6{
+        padding-top:15px;
+    }
+    .iconcon div:hover{
+        background-color: #bbbbbbd0;
+    }
+    .container tbody tr {
+        height:180px;
+    }
+    .container tbody td {
+        padding-top:15px;
+    }
+    .modal-content {
+        box-shadow: 5px 5px 5px 5px gray;
+    }
+    .rounded {
+        border-radius: 1.25rem!important;
+        border:7px solid #000000c7;
+    }
+</style>
+{% endblock %}
+
+{% block contents %}
+
+
+<body class="container" style='overflow: hidden;'>
+    <div class='modal fade' id='modal1'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'><h4 class='modal-title' style='padding-left: 25%;'>Welcome Ppukku bot</h4></div>
+                <div class='modal-body'>
+                    <div style='text-align:center;' class='iconcon'>
+                        <div style='display:inline-block;padding:20px;' onclick="location.href='{% url 'myapp:ppukkubot' %}'"><i class="display-5 fa-solid fa-robot p-3"><h6>Start Chatting</h6></i></div>
+                        <div style='display:inline-block;padding:20px 40px 20px 40px;' onclick="location.href='{% url 'myapp:pstorage' %}'"><i class="display-5 fa-solid fa-folder-plus p-3"><h6>Storage</h6></i></div>
+
+                    </div>
+                </div>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-default' data-dismiss='modal'></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class='modal fade' id='modal2'>
+        <div class='modal-dialog'>
+            <div class='modal-content'>
+                <div class='modal-header'><h4 class='modal-title' style='padding-left: 25%;'>Welcome Ruby bot</h4></div>
+                <div class='modal-body'>
+                    <div style='text-align:center;' class='iconcon'>
+                        <div style='display:inline-block;padding:20px;' onclick="location.href='{% url 'myapp:rubybot' %}'"><i class="display-5 fa-solid fa-robot p-3"><h6>Start Chatting</h6></i></div>
+                        <div style='display:inline-block;padding:20px 40px 20px 40px;' onclick="location.href='{% url 'myapp:storage' %}'"><i class="display-5 fa-solid fa-folder-plus p-3"><h6>Storage</h6></i></div>
+                    </div>
+                </div>
+                <div class='modal-footer'>
+                    <button type='button' class='btn btn-default' data-dismiss='modal'></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="rounded vh-100 m-3 p-3 d-flex justify-content-center align-items-center bg-light">
+        <table class="table table-striped table-dark text-center">
+            <thead>
+                <tr>
+                    <th colspan='3'>
+                        <i class="display-3 fa-brands fa-bots"></i>
+                    </th>
+                </tr>
+            </thead>
+                
+            <tbody>
+                <tr>
+                    <td>
+                        <div style="border: none;" class="linker btn btn-outline-light" id='r-bot'>
+                            <i class="display-5 fa-solid fa-chart-line p-3 fa-beat"></i>
+                            <h5>Stock</h5>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="border: none;" class="linker btn btn-outline-light" id="b-bot">
+                            <i class="display-5 fa-solid fa-utensils p-3 fa-beat"></i>
+                            <h5>Food</h5>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+{% endblock %}

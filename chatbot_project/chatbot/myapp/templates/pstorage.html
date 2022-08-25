@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+
+{% block src %}
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script>
+    $(function(){
+        $('.nav-button').click(function() {
+            $(this).parent().parent().toggleClass("closed");
+        })
+    })
+    
+
+$(function() {
+        $("#item li").children().each(function() {
+            len = $("#item li").children().length
+            $(this).click(function() {
+                $("#detail").hide();
+                for (let i = 0; i < len; i++) {
+                    if ($(this)[0] == $("#item li").children()[i]) {
+                        $(`#m${i+1}`).show();
+                        $("#item li").children()[i].style = 'background-color: #fff; color: #212529'
+                    } else {
+                        $(`#m${i+1}`).hide();
+                        $("#item li").children()[i].style = 'background-color: #212529; color: #fff'
+                    }
+                }
+                $("#detail").fadeIn('slow');
+            })
+        })
+    })
+
+    function del_table_data(table, id) {
+        $.ajax({
+            url: `http://127.0.0.1:8000/del_view/${table}`,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            crossDomain: true,
+
+            success: function() {
+                $(`#${id}`).empty();
+                $(`#${id}`).append("<div class='text-dark w-100 h-100 d-flex justify-content-center align-items-center'><h1>표시할 종목이 없습니다.</h1></div>");
+            }
+        })
+    }
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<style>
+    input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    .contents{
+        height:100%;
+        width: 100%;
+    }
+    .menu ::before{
+        font-family: 'Material Icons';
+        font-size: 1.5em;
+        float: left;
+        clear: left;
+    }
+    .menu li:nth-child(1) button::before{
+        content: "\ea12";
+        margin: 0 20px 10px 0;
+    }
+    .menu li:nth-child(2) button::before{
+        content: "\e56c";
+        margin: 0 20px 10px 0;
+    }
+    .menu {
+        display: block;
+        border-radius: 20px;
+        padding: 10px;
+        max-width: 220px;
+    }
+    .menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .menu div {
+        position: relative;
+        font-size: 1em;
+        font-family: 'Noto Sans KR';
+        padding-top: 6px;
+    }
+
+    #detail div::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    #detail div::-webkit-scrollbar-thumb {
+        background-color: grey;
+        border-radius: 10px;
+    }
+
+    #detail div::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #detail div {
+        overflow-y: scroll;
+        float: right;
+    }
+
+    #fixing {
+        position: fixed;
+        top: -1%;
+        bottom: -4%;
+        right: 16%;
+        left: 16%;
+    }
+
+    td, th {
+        vertical-align : middle;
+    }
+    tr:nth-child(1) td{
+        border-radius:10px 10px 0 0;
+    }
+
+    @media(max-width:1400px) {
+        li h4{
+            display: none;
+        }
+        li button{
+            padding-left: 45px;
+        }
+      }
+    @media(max-width:1200px) {
+        .menu{
+            display:none;
+        }
+    }
+
+    .left-menu{
+        float: right;
+        position: relative;
+        left: -13%;
+        top: -15%;
+        padding-top: 100px;
+        
+    }
+    .left-menu .drop-down {
+        list-style: none; 
+        overflow: hidden; 
+        height: 200px;
+        font-family: Arial;
+        width: 93px;
+        margin: 0 auto;
+        padding: 0;
+        text-align: center;
+        -webkit-transition: height 0.4s ease;
+                transition: height 0.4s ease;
+    
+      }
+    .left-menu .drop-down.closed {
+        height: 43px;
+    }
+    .left-menu .drop-down li {
+        border-bottom: 5px solid #ffffff0a;
+        padding: 6px;
+      }
+    .left-menu .drop-down li a:hover{
+        background-color: #3d3d3da6;
+    }
+    .left-menu .drop-down li a {
+        display: block;
+        background-color: #3d3d3d;
+        border-radius: 0 7px 7px 0;
+        color: #ecf0f1;
+        text-decoration: none;
+        padding: 7px; 
+    }
+    .nav-button{
+        margin-top: -7%;
+    }
+    .left-menu .drop-down li:first-child a:after {
+        float: right;
+        margin-left: -30px; 
+        margin-right: 5px;
+      }
+
+    table {
+        width: 100px;
+        height:100px;
+        border-collapse: collapse;
+        border-radius: 10px;
+        border-style: hidden;
+        box-shadow: 0 0 0 2px #000;
+    }
+    .table-striped>tbody>tr:nth-of-type(odd)>* {
+        --bs-table-accent-bg: rgb(124 130 128 / 13%);
+        color: var(--bs-table-striped-color);
+    }
+    td:nth-child(4) {
+        width:200px;
+        white-space: nowrap; 
+        overflow:hidden; 
+        text-overflow:ellipsis;
+    }
+
+</style>
+{% endblock %}
+
+{% block contents %}
+<body class="container" style="overflow: hidden; margin-top: -1%; position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+    <div style='position: relative;'>
+        <div class='left-menu'>
+            <ul class="drop-down closed" style='position: fixed; bottom:0; top:45px; left:68%; right:0;'>
+              <li id='li1'><a href="#" class="nav-button"><i class="fa-solid fa-angle-down"></i></a></li>
+              <li><a href="{% url 'myapp:home' %}">Home</a></li>
+              <li><a href="{% url 'myapp:ppukkubot' %}">Chat</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id='fixing' class="rounded m-3 p-3 d-flex justify-content-center align-items-center">
+        <div class='contents'>
+            <div class='d-flex align-items-center h-100'>
+                <div class="menu bg-dark w-25 p-2">
+                    <ul id='item'>
+                        <li id='b1'><button class='mb-1 btn btn-outline-light p-6 w-100 d-flex align-items-center justify-content-center border-dark' style='background-color: #fff; color: #212529'><h4>맛집추천</h4></button></li>
+                        <li id='b2'><button class='mb-1 btn btn-outline-light p-6 w-100 d-flex align-items-center justify-content-center border-dark'><h4>메뉴추천</h4></button></li>
+                    </ul>
+                </div>              
+                <div class='h-100 w-100' id='detail'>
+                    <div class='detail-container w-100 h-100 p-2' id='m1'>
+                        {% if not danbee_rest %}
+                            <div class='text-black w-100 h-100 d-flex justify-content-center align-items-center'><h1>표시할 대화목록이 없습니다.</h1></div>
+                        {% else %}
+                            <button onclick='del_table_data("danbee_rest", "m1")' class='btn btn-secondary d-flex align-items-center justify-content-center w-100 mb-2 pt-3'><h2><i class="fa-solid fa-triangle-exclamation fa-fade p-1 pe-3"></i><strong>초기화</strong><i class="fa-solid fa-triangle-exclamation fa-fade p-1 ps-3"></i></h2></button>
+                            <table class='table table-striped text-center' style='border-radius:10px;'>
+                                <thead>
+                                    <tr class='bg-dark text-white'><th colspan='7' class='display-5'>예약 확정 리스트</th></tr>
+                                    <tr>
+                                        <th>장르</th>
+                                        <th>점포명</th>
+                                        <th colspan='2'>이미지</th>
+                                        <th>위치</th>
+                                        <th>인원</th>
+                                        <th>예약된 날짜</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            {% for view in danbee_rest %}
+                                    {% if view.16 %}
+                                        <tr>
+                                            <td>{{view.6}}</td>  
+                                            <td>{{view.9}}<td> 
+                                            <td><div style='width: 50px,height:50px;'><img src="{{view.8}}" alt="" style='width:100%; height:100%;'></div></td>
+                                            <td data-toggle="tooltip" data-placement="right" title="{{ view.10|safe }}[Tel:{{view.11}}]">{{view.10 | truncatechars:30}}</td>
+                                            <td>{{view.13}}</td>
+                                            <td>{{view.14}} {{view.15}}</td>                                  
+                                        </tr>
+                                    {% endif %}
+                            {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                    <div class='h-100 w-100' id='detail'>
+                        <div class='detail-container w-100 h-100 p-2' id='m2'>
+                            {% if not danbee_menu %}
+                                <div class='text-black w-100 h-100 d-flex justify-content-center align-items-center'><h1>표시할 대화목록이 없습니다.</h1></div>
+                            {% else %}
+                                <button onclick='del_table_data("danbee_menu", "m2")' class='btn btn-secondary d-flex align-items-center justify-content-center w-100 mb-2 pt-3'><h2><i class="fa-solid fa-triangle-exclamation fa-fade p-1 pe-3"></i><strong>초기화</strong><i class="fa-solid fa-triangle-exclamation fa-fade p-1 ps-3"></i></h2></button>
+                                <table class='table table table-striped text-center' style='solid-radius:10px'>
+                                    <thead>
+                                        <tr class='bg-dark text-white'><th colspan='7' class='display-5'>메뉴추천 리스트</th></tr>
+                                        <tr style='background-color: rgb(124 130 128 / 13%);'><th>답변ID</th><th>추천 결과</th><th>날짜</th><th>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in danbee_menu %}
+                                            <tr></tr>
+                                            <tr>
+                                                <td>{{ i.1 }}</td>
+                                                <td data-toggle="tooltip" data-placement="right" title="선택한 음식: {% if i.6 != None %}{{i.6}}{% endif %}{% if i.7 != None %}/{{i.7}}{% endif %}{% if i.8 != None %}/{{i.8}}{% endif %}{% if i.9 != None %}/{{i.9}}{% endif %}{% if i.10 != None %}/{{i.10}}{% endif %}">{% if i.11 != None %}{{ i.11 }}{% else %}고르지 않음{% endif %}</td>
+                                                <td>{{ i.4 }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

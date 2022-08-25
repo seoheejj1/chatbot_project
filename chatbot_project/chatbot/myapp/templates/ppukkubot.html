@@ -1,0 +1,689 @@
+{% extends 'base.html' %}
+
+{% block src %}
+    {% load static %}
+    <script>
+        $(function() {
+            $('.nav_button').click(function() {
+                $(this).parent().parent().toggleClass('closed');
+            })
+        })
+
+        window.onload = function() {
+            $chatbox = $("#chatbox");
+            const bottext = "<div style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>" + '안녕 :) 너의 맛있는 푸드 라이프를 책임질 뿌꾸야' + "</span></div></div>";
+            $chatbox.append(bottext);
+        }
+
+        $(function() {
+            $(".nav-button").click(function() {
+              $(this).parent().parent().toggleClass("closed");
+            });
+
+            // SEND
+            $("#sendbtn").click(function() {
+                send_message();
+                $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+            }); 
+
+            // ENTER
+            $("#chattext").keyup(function(event) {
+                if(event.keyCode == 13) {
+                    send_message();
+                    $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+                }
+            })
+        })
+
+        function regFilter(str) {
+            return str.replace(/[^\w\sㄱ-힣!?]|[\_]/g, '')
+        }
+
+        function pingpongDel(str) {
+            return str.replace('(핑퐁[pingpong.us]에서 생성된 자동답변입니다)', '')
+        }
+
+        function send_message() {
+            const chattext = $("#chattext").val().trim();
+
+            if (chattext == "") {
+                $("#chattext").focus();
+                return;
+            }
+
+            $("#wait").remove();
+            const addtext = "<div class='mt-5 mb-5' style='margin:20px 0;text-align:right;'><span style='padding:10px; background-color:#f1f1f1;border-radius:3px;'>" + chattext + "</span></div>";
+            $("#chatbox").append(addtext);
+
+            $("#chattext").val("");
+            $("#chattext").focus();
+
+            const botwait = "<div id='wait' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>로딩중이니 조금만 기달려줘 꼬북!&nbsp;<i class='fa-solid fa-spinner fa-spin-pulse'></i></span></div></div>";
+            $chatbox.append(botwait);
+
+            try {
+                chatflow
+            } catch {
+                chatflow = ''
+                cnt = 0
+            }
+
+            if (cnt == 1) {
+                param = "food1"
+                node = "SlotNode_1654496397973"
+
+                if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                    db_ajax({
+                        "ins_id": ins_id,
+                        "food1": regFilter(chattext)
+                    })
+                }
+            } else if (cnt == 2) {
+                param = "food2"
+                node = "SlotNode_1654496441069"
+
+                if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                    db_ajax({
+                        "ins_id": ins_id,
+                        "food2": regFilter(chattext)
+                    })
+                }
+            } else if (cnt == 3) {
+                param = "food3"
+                node = "SlotNode_1654496556427"
+
+                if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                    db_ajax({
+                        "ins_id": ins_id,
+                        "food3": regFilter(chattext)
+                    })
+                }
+            } else if (cnt == 4) {
+                param = "food4"
+                node = "SlotNode_1654496689700801566"
+
+                if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                    db_ajax({
+                        "ins_id": ins_id,
+                        "food4": regFilter(chattext)
+                    })
+                }
+            } else if (cnt == 5) {
+                param = "food5"
+                node = "SlotNode_1654496696692225207"
+
+                if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                    db_ajax({
+                        "ins_id": ins_id,
+                        "food5": regFilter(chattext)
+                    })
+                }
+            }
+
+            if (chatflow == '메뉴 추천') {
+                data = {
+                    "user_id": "s97741875@gamil.com",
+                    "input_sentence": chattext,
+                    "chatflow_id": "FLOW1654495955000",
+                    "ins_id": ins_id,
+                    "intent_id": "a95d62d3-14af-418d-9446-18badadac937",
+                    "session_id": session_id,
+                    "node_id": node,
+                    "param_id": param
+                }
+            } else {
+                data = {
+                    "user_id": "s97741875@gamil.com",
+                    "input_sentence": chattext
+                }
+            }
+
+            try {
+                if (chattext != '처음으로' && chattext != '다시' ) {
+                    if (node == 'SlotNode_165543532653655989') {
+                        data = {
+                            "user_id": "s97741875@gamil.com",
+                            "input_sentence": chattext,
+                            "chatflow_id": "FLOW1653963618000",
+                            "ins_id": ins_id,
+                            "intent_id": "2fb157ca-7d1a-4751-894b-96d2eacf3bd7",
+                            "session_id": session_id,
+                            "node_id": node,
+                            "param_id": param
+                        }
+
+                        if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                            db_ajax({
+                                "ins_id": ins_id,
+                                "population": regFilter(chattext)
+                            })
+                        }
+
+                        node = "SlotNode_1655013640752"
+                        param = "날짜"
+                        
+                    } else if (node == 'SlotNode_1655013640752') {
+                        data = {
+                            "user_id": "s97741875@gamil.com",
+                            "input_sentence": chattext,
+                            "chatflow_id": "FLOW1653963618000",
+                            "ins_id": ins_id,
+                            "intent_id": "2fb157ca-7d1a-4751-894b-96d2eacf3bd7",
+                            "session_id": session_id,
+                            "node_id": node,
+                            "param_id": param
+                        }
+
+                        if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                            db_ajax({
+                                "ins_id": ins_id,
+                                "day": regFilter(chattext)
+                            })
+                        }
+
+                        node = "SlotNode_1655011730089"
+                        param = "시간"
+                    } else if (node == 'SlotNode_1655011730089') {
+                        data = {
+                            "user_id": "s97741875@gamil.com",
+                            "input_sentence": chattext,
+                            "chatflow_id": "FLOW1653963618000",
+                            "ins_id": ins_id,
+                            "intent_id": "2fb157ca-7d1a-4751-894b-96d2eacf3bd7",
+                            "session_id": session_id,
+                            "node_id": node,
+                            "param_id": param
+                        }
+
+                        if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                            db_ajax({
+                                "ins_id": ins_id,
+                                "time": regFilter(chattext)
+                            })
+                        }
+
+                        node = "SlotNode_1655013989375423472"
+                        param = "예약저장"
+                    } else if (node == 'SlotNode_1655013989375423472') {
+                        data = {
+                            "user_id": "s97741875@gamil.com",
+                            "input_sentence": "맞아",
+                            "chatflow_id": "FLOW1653963618000",
+                            "ins_id": ins_id,
+                            "intent_id": "2fb157ca-7d1a-4751-894b-96d2eacf3bd7",
+                            "session_id": session_id,
+                            "node_id": node,
+                            "param_id": param
+                        }
+
+                        if (chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                            db_ajax({
+                                "ins_id": ins_id,
+                                "reservation": regFilter(chattext)
+                            })
+                        }
+
+                        delete node
+                        delete param
+                    }
+
+                } else {
+                    data = {
+                        "user_id": "s97741875@gamil.com",
+                        "input_sentence": "처음으로",
+                        "chatflow_id": res['chatflow_id'],
+                        "ins_id": ins_id,
+                        "intent_id": intent_id,
+                        "session_id": session_id,
+                        "node_id": node,
+                        "param_id": param
+                    }
+
+                    delete node
+                    delete param
+                    cnt = 0
+                    chatflow = ''
+                }
+            } catch {}
+            
+            $.ajax({
+                url: 'https://danbee.ai/chatflow/chatbot/v2.0/3904a8c1-fdcd-4328-89ac-da6d1dad1cd7/message.do',
+                type: "POST",
+                data: JSON.stringify(data),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                crossDomain: true,
+
+                success: function(response){
+                    $("#wait").remove();
+
+                    res = response['responseSet']['result']
+                    session_id = res['session_id']
+                    intent_id = res['intent_id']
+                    ins_id = res['ins_id']
+
+                    answer = ''
+
+                    for (let i in res['result']) {
+                        $("#chatbox").append(`<div class='mb-2 d-flex align-items-center' style='height:60px;margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>${pingpongDel(res['result'][i]['message'])}</span></div></div>`)
+                        answer += res['result'][i]['message'] + ' '            
+                    }
+
+                    $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+
+                    if (cnt == 0 && chattext != "처음으로" && chattext != "다시" && chattext != "골라줘") {
+                        danbee_query = {
+                            "answer": answer,
+                            "ins_id": ins_id,
+                            "intent_id": intent_id,
+                            "input": chattext,
+                        }
+
+                        db_ajax(danbee_query)
+                    }
+                    
+
+                    if (res['chatflow_id'] == 'FLOW1653963618000') {
+                        try {
+                            table = '<table class="table table-hover table-striped table-success text-center">'
+                            for (let i in res['result'][1]['optionList']) {
+                                table += `<tr><td style='cursor: pointer;' onclick="genre_ajax('${res['result'][1]['optionList'][i]['label']}')">${res['result'][1]['optionList'][i]['label']}</td></tr>`
+                            }
+                            table += '</table>'
+
+                            $("#chatbox").append(`<div class='mb-2' style='margin:20px 0;text-align:left;'><div class='ml-3'>${table}</div></div>`)
+                        } catch {}
+
+                    } else if (res['chatflow_id'] == 'FLOW1654495955000') {
+                        if (res['param_id'] == "수락여부") {
+                            chatflow = ''
+                            cnt = 0
+
+                            db_ajax({
+                                "ins_id": ins_id,
+                                "food_result": res['parameters']['menu']
+                            })
+
+                        } else {
+                            chatflow = '메뉴 추천'
+                            cnt += 1
+                        }
+                    }
+                }
+            })
+        }
+
+        function genre_ajax(genre_val) {
+            if (genre_val == "처음으로" || genre_val == "다시") {
+                escape("처음으로")
+                return
+            }
+
+            const botwait = "<div id='wait' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>로딩중이니 조금만 기달려줘 꼬북!&nbsp;<i class='fa-solid fa-spinner fa-spin-pulse'></i></span></div></div>";
+            $chatbox.append(botwait);
+
+            jsonData = {
+                "user_id": "s97741875@gamil.com",
+                "input_sentence": genre_val,
+                "ins_id": ins_id,
+                "intent_id": "2fb157ca-7d1a-4751-894b-96d2eacf3bd7",
+                "node_id": "SlotNode_1654326104100",
+                "param_id": "장르",
+                "chatflow_id": "FLOW1653963618000",
+                "postBackFlag": true,
+                "session_id": session_id
+            }
+
+            db_ajax({
+                "ins_id": ins_id,
+                "genre": genre_val
+            })
+
+            $.ajax({
+                url: 'https://danbee.ai/chatflow/chatbot/v2.0/3904a8c1-fdcd-4328-89ac-da6d1dad1cd7/message.do',
+                type: "POST",
+                data: JSON.stringify(jsonData),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                crossDomain: true,
+
+                success: function(response){
+                    $("#wait").remove();
+
+                    res = response['responseSet']['result']
+                    ins_id = res['ins_id']
+
+                    table = '<table class="table table-hover table-striped table-success text-center">'
+                    for (let i in res['result'][0]['optionList']) {
+                        table += `<tr><td style='cursor: pointer;' onclick="region_ajax('${res['result'][0]['optionList'][i]['label']}')">${res['result'][0]['optionList'][i]['label']}</td></tr>`
+                    }
+                    table += '</table>'
+
+                    for (let i in res['result']) {
+                        $("#chatbox").append(`<div class='mb-2 d-flex align-items-center' style='height:60px;margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>${res['result'][i]['message']}</span></div></div>`)
+                    }
+
+                    $("#chatbox").append(`<div class='mb-2' style='margin:20px 0;text-align:left;'><div class='ml-3'>${table}</div></div>`)
+                    $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+                }
+            })
+        }
+
+        function region_ajax(region_val) {
+            if (region_val == "처음으로" || region_val == "다시") {
+                escape("처음으로")
+                return
+            }
+
+            jsonData = {
+                "user_id": "s97741875@gamil.com",
+                "input_sentence": region_val,
+                "ins_id": ins_id,
+                "intent_id": "2fb157ca-7d1a-4751-894b-96d2eacf3bd7",
+                "node_id": "SlotNode_1654326218844",
+                "param_id": "지역",
+                "chatflow_id": "FLOW1653963618000",
+                "postBackFlag": true,
+                "session_id": session_id
+            }
+
+            db_ajax({
+                "ins_id": ins_id,
+                "region": region_val
+            })
+
+            const botwait = "<div id='wait' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>로딩중이니 조금만 기달려줘 꼬북!&nbsp;<i class='fa-solid fa-spinner fa-spin-pulse'></i></span></div></div>";
+            $chatbox.append(botwait);
+
+            $.ajax({
+                url: 'https://danbee.ai/chatflow/chatbot/v2.0/3904a8c1-fdcd-4328-89ac-da6d1dad1cd7/message.do',
+                type: "POST",
+                data: JSON.stringify(jsonData),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                crossDomain: true,
+
+                success: function(response){
+                    $("#wait").remove();
+
+                    res = response['responseSet']['result']
+
+                    table = '<table class="table table-success text-center" style="vertical-align: middle;">'
+                    table += '<thead><tr><th>매장사진<th><th>매장정보</th><th>예약기능</th></tr></thead><tbody>'
+                    for (let i in res['result'][0]['carouselList']) {
+                        table += '<tr>'
+                        table += `<td rowspan='4'><img src="${res['result'][0]['carouselList'][i]['imgRoute']}" alt="맛집ㅎㅎ"></td>`
+                        table += '<td><i class="fa-solid fa-utensils"></i></td>'
+                        table += `<th>${res['result'][0]['carouselList'][i]['cardTitle']}</th>`
+                        table += `<td rowspan="4"><button class="btn btn-outline-success" style='width: 80px;' onclick="reservation(${i})">예약</button></td>`
+                        table += '</tr>'
+                        table += `<tr><td><i class="fa-solid fa-house-chimney"></i></td><th>${res['result'][0]['carouselList'][i]['subCardTitle']}</th></tr>`
+                        table += `<tr><td><i class="fa-solid fa-phone"></i></td><th><a class="link-info" href='tel:${res['result'][0]['carouselList'][i]['optionList'][0]['value']}'>${res['result'][0]['carouselList'][i]['optionList'][0]['label']}</a></th></tr>`
+                        table += `<tr style='border-bottom: 2px solid #000'><td><i class="fa-solid fa-map-location-dot"></i></td><th><a class="link-info" href='${res['result'][0]['carouselList'][i]['optionList'][1]['value']}'>${res['result'][0]['carouselList'][i]['optionList'][1]['label']}</a></th></tr>`
+                    }
+                    table += '</tbody></table><div class="p-3"></div>'
+                    
+                    $("#chatbox").append(`<div class='mb-2 d-flex align-items-center' style='height:60px;margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>${res['result'][1]['message']}</span></div></div>${table}`)
+                    $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+                }
+            })
+        }
+
+        function reservation(index) {
+            const botwait = "<div id='wait' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>로딩중이니 조금만 기달려줘 꼬북!&nbsp;<i class='fa-solid fa-spinner fa-spin-pulse'></i></span></div></div>";
+            $chatbox.append(botwait);
+
+            $.ajax({
+                url: 'https://danbee.ai/chatflow/chatbot/v2.0/3904a8c1-fdcd-4328-89ac-da6d1dad1cd7/message.do',
+                type: "POST",
+                data: JSON.stringify({
+                    "user_id": "s97741875@gamil.com",
+                    "chatflow_id": "FLOW1653963618000",
+                    "input_sentence": "예약해줘",
+                    "intent_id": "2fb157ca-7d1a-4751-894b-96d2eacf3bd7",
+                    "node_id": "SlotNode_1654583628179",
+                    "param_id": "마무리",
+                    "session_id": session_id,
+                    "ins_id": ins_id
+                }),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                crossDomain: true,
+
+                success: function(response) {
+                    $("#wait").remove();
+
+                    $("#chatbox").append(`<div class='mb-5 d-flex align-items-center' style='height:60px;margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>${response['responseSet']['result']['result'][0]['message'].replace('이 매장으로', "선택한 " + res['result'][0]['carouselList'][index]['cardTitle'] + " (으)로")}</span></div></div>`);
+
+                    db_ajax({
+                        "ins_id": ins_id,
+                        "img": res['result'][0]['carouselList'][index]['imgRoute'],
+                        "name": res['result'][0]['carouselList'][index]['cardTitle'],
+                        "adr": res['result'][0]['carouselList'][index]['subCardTitle'],
+                        "call": res['result'][0]['carouselList'][index]['optionList'][0]['value'],
+                        "loc": res['result'][0]['carouselList'][index]['optionList'][1]['value']
+                    })
+                    
+                    res = response['responseSet']['result'];
+
+                    $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+
+                    node = "SlotNode_165543532653655989"
+                    param = "인원수"
+                }
+            })
+        }
+
+        function escape(query, node=res['node_id'], param=res['param_id']) {
+            $.ajax({
+                url: 'https://danbee.ai/chatflow/chatbot/v2.0/3904a8c1-fdcd-4328-89ac-da6d1dad1cd7/message.do',
+                type: "POST",
+                data: JSON.stringify({
+                    "user_id": "s97741875@gamil.com",
+                    "input_sentence": query,
+                    "chatflow_id": res['chatflow_id'],
+                    "ins_id": res['ins_id'],
+                    "intent_id": res['intent_id'],
+                    "node_id": node,
+                    "param_id": param
+                }),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                crossDomain: true,
+
+                success: function(response) {
+                    $("#wait").remove();
+
+                    res = response['responseSet']['result']
+
+                    for (let i in res['result']) {
+                        $("#chatbox").append(`<div class='mb-2 d-flex align-items-center' style='height:60px;margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/pukkbot.jpg'></div><span style='padding:10px 20px;background-color:#f1ffd3;border-radius:3px;'>${pingpongDel(res['result'][i]['message'])}</span></div></div>`)
+                        answer += res['result'][i]['message'] + ' '            
+                    }
+
+                    $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+                }
+            })
+        }
+        
+        function db_ajax(json_data) {
+            $.ajax({
+                url: 'http://127.0.0.1:8000/send_ppukku/',
+                type: 'GET',
+                data: json_data,
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8"
+            })
+        }
+    </script>
+    <style>
+        input:focus::placeholder{
+            color:transparent;
+        }
+        td, th {
+            vertical-align : middle;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .textcon{
+            padding: 20px 0 0 26px;
+        }
+        .imgcon{
+            width: 70px;
+            height: 70px; 
+            border-radius: 70%;
+            overflow: hidden;
+            float: left;
+            padding:5px;
+            margin-right: 15px;
+        }
+        img{
+            width: 90%;
+            height: 90%;
+            object-fit: cover;
+        }
+        .chatheader {
+            left: 0;
+            top: 0;
+            width: 100%;
+            color: #000;
+            text-align: center;
+            padding-top:10px;
+            border-radius: 7px;
+            height: 10%;
+        }
+        .chatfooter {
+            left: 0;
+            bottom: 0;
+            width: 93%;
+            padding:10px 0;
+            margin: 10px 0 45px 28px;
+            color: #000;
+            text-align: center;
+            background-color:#fff;
+            border-radius: 7px;
+        }
+        .con{
+            width:70%; 
+            margin:0 auto;
+            border-radius: 7px;
+            box-shadow: 2px 2px 2px 2px gray
+        }
+        body{
+            margin-top:2%;
+            text_align: center;
+            padding: 30px;
+        }
+        #chatbox{
+            border-radius: 7px;
+            background-color: #fff;
+            margin: 30px;
+            height:75%;
+            margin-top:20px;
+            padding:5px;
+            padding-right: 15px;
+            overflow-y:scroll;
+            overflow-x:hidden;
+            max-height:100vh;
+        }
+        #chatbox::-webkit-scrollbar {
+            width: 10px;
+        }
+        #chatbox::-webkit-scrollbar-thumb {
+            background-color: grey;
+            border-radius: 10px;
+        }
+        #chatbox::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #chattext{
+            padding:30px;
+        }
+        .icon{
+            text-align: center;
+            font-size:20px; 
+            padding: 10px; 
+            background-color:#fff;
+            width: 50px;
+            border-radius: 50%;
+        }
+        #chattext:focus {
+            margin-left:10px;
+            outline: none;
+            border: none;
+        }
+        .line-box {
+            position: relative;
+            width: 97%;
+            height: 2px;
+          }
+        .line {
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(37, 37, 37, 0.295);
+            transition: ease .6s;
+        }
+
+        input:focus + .line-box .line {
+            width: 97%;
+        }
+
+        #men1{
+            left: -15.3%;
+        }
+          
+    </style>
+{% endblock %}
+
+{% block contents %}
+    <body class='container' style='overflow: hidden; margin-top: -1%; position: absolute; top: 0; bottom: 0; left: 0; right: 0;'>
+        <div 'position: relative;'>
+            <nav class='menu' id='men1'>
+                <ul class="drop-down closed" style='position: fixed'>
+                  <li><a href="#" class="nav-button"><i class="fa-solid fa-angle-down"></i></a></li>
+                  <li><a href="{% url 'myapp:home' %}">Home</a></li>
+                  <li><a href="{% url 'myapp:pstorage' %}">My Storage</a></li>
+                </ul>
+            </nav>
+        </div>
+    
+        <div style="padding:5px; background-color: #98ca9eb9" class='con h-100'>
+            <div class="chatheader">
+                <div width="100%" border="0">
+                    <div style='padding-left: 47%;'>
+                        <div width="50%" align="left" class='icon'>
+                            <i class="fa-solid fa-robot fa-bounce"></i>
+                        </div>
+                        <div class='dotcon'>
+                            <div class="dot-elastic"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="chatbox">
+            </div>
+            <div class="chatfooter">
+                <table width="100%">
+                    <tr>
+                        <td width="88%">
+                            <input type='text' id="chattext" style="padding:5px 0;width:100%;border:none;">
+                            <div class="line-box">
+                                <div class="line"></div>
+                            </div>
+                        </td>
+                        <td width="10%" style='padding-right:10px;'>
+                            <button type='button' class="btn btn-dark" id="sendbtn" style="padding:5px 0;width:100%;" >send</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+{% endblock %}

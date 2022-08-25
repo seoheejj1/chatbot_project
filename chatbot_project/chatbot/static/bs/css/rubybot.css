@@ -1,0 +1,337 @@
+
+
+/* 그림자 */
+.container::before, .container::after
+{
+  position: absolute;
+  content : "";
+  top: -10%;
+  left: -5%;
+  height:110%;
+  width:110%;
+  border-radius:50%;
+  opacity:0.5;
+  filter: blur(60px);
+}
+.container::after
+{
+  /* background-color:#97ff9fb9; */
+    background-color:#77a4af69;
+    z-index: -1;
+    animation : backglow2 15s ease infinite;
+}
+
+.container::before
+{
+    background-color:#f3b7d848;
+    z-index: -2;
+    animation : backglow1 15s ease infinite;
+}
+@keyframes backglow1
+{
+  
+  0%
+  {
+    transform: translate(10%, 10%) scale(1);
+    opacity:0.5;
+  }
+  
+   25%
+  {
+    transform: translate(-10%, 10%) scale(0.8);
+    opacity:0.5;
+  }
+  
+   50%
+  {
+    transform: translate(-10%, -10%) scale(1.2);
+    opacity:0.8;
+  }
+  
+   75%
+  {
+    transform: translate(10%, -10%) scale(1.1);
+    opacity:0.2;
+  }
+  
+   100%
+  {
+    transform: translate(10%, 10%) scale(1);
+    opacity:0.5;
+  }
+  
+  
+}
+
+
+@keyframes backglow2
+{
+  
+  0%
+  {
+    transform: translate(-10%, -10%) scale(1);
+    opacity:0.5;
+  }
+  
+   25%
+  {
+    transform: translate(10%, -10%) scale(0.8);
+    opacity:0.5;
+  }
+  
+   50%
+  {
+    transform: translate(10%, 10%) scale(1.2);
+    opacity:0.8;
+  }
+  
+   75%
+  {
+    transform: translate(-10%, 10%) scale(1.1);
+    opacity:0.2;
+  }
+  
+   100%
+  {
+    transform: translate(-10%, -10%) scale(1);
+    opacity:0.5;
+  }
+  
+  
+}
+
+/* chat text 내부 */
+/* #chatbox > div:nth-child(1) > span{
+
+} */
+
+
+/* menu */
+.menu{
+    float: right;
+    position: relative;
+    left: -10%;
+    top: -15%;
+    padding-top: 100px;
+    
+}
+.menu .drop-down {
+    list-style: none; 
+    overflow: hidden; /* When ul height is reduced, ensure overflowing li are not shown */
+    height: 200px; /* 172px = (38 (li) + 5 (li border)) * 4 (number of li) */
+    font-family: Arial;
+    width: 93px;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+    -webkit-transition: height 0.4s ease;
+            transition: height 0.4s ease;
+
+  }
+.menu .drop-down.closed {
+    height: 43px;
+}
+.menu .drop-down li {
+    border-bottom: 5px solid #ffffff0a;
+    padding: 6px;
+  }
+.menu .drop-down li a:hover{
+    background-color: #3d3d3da6;
+}
+.menu .drop-down li a {
+    display: block;
+    background-color: #3d3d3d;
+    border-radius: 0 7px 7px 0;
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 7px; 
+}
+.nav-button{
+    margin-top: -7%;
+}
+.menu .drop-down li:first-child a:after {
+    float: right;
+    margin-left: -30px; /* Excessive -margin to bring link text back to center */
+    margin-right: 5px;
+  }
+
+
+  /* send버튼 */
+  #sendbtn {
+    border: none;
+    background: rgb(139, 138, 138);
+    background: linear-gradient(0deg, rgba(63, 54, 54, 0.856) 0%, rgb(92, 92, 92) 100%);
+    color: #fff;
+    overflow: hidden;
+    margin-right:10px;
+  }
+  #sendbtn:hover {
+    text-decoration: none;
+    color: #fff;
+  }
+  #sendbtn:before {
+    position: absolute;
+    content: '';
+    display: inline-block;
+    top: -180px;
+    left: 0;
+    width: 30px;
+    height: 100%;
+    animation: shiny-btn1 3s ease-in-out infinite;
+  }
+  #sendbtn:hover{
+    opacity: .7;
+  }
+  #sendbtn:active{
+    box-shadow:  4px 4px 6px 0 rgba(255,255,255,.3),
+                -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+    inset -4px -4px 6px 0 rgba(255,255,255,.2),
+    inset 4px 4px 6px 0 rgba(0, 0, 0, .2);
+  }
+
+  /* 헤더 점 */
+  .dotcon{
+      padding: 7px 0 0 20px;
+  }
+  .dot-elastic {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #27252c;
+    color: #221f30;
+    -webkit-animation: dot-elastic 1s infinite linear;
+    animation: dot-elastic 1s infinite linear;
+  }
+  .dot-elastic::before, .dot-elastic::after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 0;
+  }
+  .dot-elastic::before {
+    background-color: rgba(100, 194, 112, 0.829);
+    left: -15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #4f4d53;
+    color: #4e4c55;
+    -webkit-animation: dot-elastic-before 1s infinite linear;
+    animation: dot-elastic-before 1s infinite linear;
+  }
+  .dot-elastic::after {
+    left: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: #4f4d53;
+    color: #4e4c55;
+    -webkit-animation: dot-elastic-after 1s infinite linear;
+    animation: dot-elastic-after 1s infinite linear;
+  }
+  
+  @-webkit-keyframes dot-elastic-before {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1.5);
+    }
+    50% {
+      transform: scale(1, 0.67);
+    }
+    75% {
+      transform: scale(1, 1);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  
+  @keyframes dot-elastic-before {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1.5);
+    }
+    50% {
+      transform: scale(1, 0.67);
+    }
+    75% {
+      transform: scale(1, 1);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  @-webkit-keyframes dot-elastic {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1, 1.5);
+    }
+    75% {
+      transform: scale(1, 1);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  @keyframes dot-elastic {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1, 1.5);
+    }
+    75% {
+      transform: scale(1, 1);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  @-webkit-keyframes dot-elastic-after {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1, 0.67);
+    }
+    75% {
+      transform: scale(1, 1.5);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  @keyframes dot-elastic-after {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1, 0.67);
+    }
+    75% {
+      transform: scale(1, 1.5);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+    
+  }

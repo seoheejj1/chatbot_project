@@ -1,0 +1,463 @@
+{% extends 'base.html' %}
+
+{% block src %}
+    {% load static %}
+    <script>
+        window.onload = function() {
+            $chatbox = $("#chatbox");
+            const bottext = "<div style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/rubybot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#d9eaff;border-radius:3px;'>" + '안냥 :D 내가 너의 주식라이프에 도움을 줄꺼다냥~' + "</span></div></div>";
+            $chatbox.append(bottext);
+        }
+        $(function() {
+            $(".nav-button").click(function() {
+              $(this).parent().parent().toggleClass("closed");
+            });
+
+            // SEND
+            $("#sendbtn").click(function() {
+                send_message();
+                $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+            }); 
+
+            // ENTER
+            $("#chattext").keyup(function(event) {
+                if(event.keyCode == 13) {
+                    send_message();
+                    $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')});
+                }
+            })
+        })
+
+        function selection(text) {
+            waiter();
+            ajaxing({query: text, selection: true});
+        }
+
+        function selection_trade(text, amount, intent) {
+            waiter();
+            ajaxing({query: text, trade: amount, intent: intent});
+        }
+
+        function eor_select(name, eor) {
+            waiter();
+            ajaxing({query: name, eor: eor});
+        }
+
+        function usd_krw(eor) {
+            const inputNum = $(".usd_left").last().val();
+
+            if (inputNum < 0) {
+                alert("1보다 큰 숫자만 입력해달라 냥!");
+                $(".usd_left").last().val('');
+                $(".usd_left")[0].focus();
+                $(".krw_right").last().val(0);
+            } else {
+                $(".krw_right").last().val((inputNum * eor).toFixed(0));
+            }
+        }
+
+        function krw_usd(eor) {
+            const inputNum = $(".krw_left").last().val();
+
+            if (inputNum < 0) {
+                alert("1보다 큰 숫자만 입력해달라 냥!");
+                $(".krw_left").last().val('');
+                $(".krw_left")[0].focus();
+                $(".usd_right").last().val(0);
+            } else {
+                $(".usd_right").last().val((inputNum / eor).toFixed(3));
+            }
+        }
+
+        function word_search(text) {
+            waiter();
+            ajaxing({query: text, word: text});
+        }
+
+        function stock_trade(event, num, intent) {
+            waiter();
+            ajaxing({query: event + ' ' + num + '개 ' + intent})
+        }
+
+        function send_todo(event, intent) {
+            if (intent == '정보 조회') {
+                waiter();
+                ajaxing({query: event + '조회'});
+            } else if (intent == '매수') {
+                const table = "<div class='input-group'><input type='number' placeholder='갯수를 입력해주세요.' class='cnt_input form-control text-center'><button class='btn btn-outline-secondary'>매수하기</button></div>"
+                const bottext = `<div class='removable' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/rubybot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#DDD;border-radius:3px;'>몇 개 매수할꺼냥?</span>${table}</div></div>`;
+                $("#chatbox").append(bottext);
+                $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')})
+                $(".cnt_input ~ button").on('click', function() {
+                    if ($(".cnt_input").last().val() <= 0) {
+                        alert("1 이상의 숫자를 기입해달라 냥!!");
+                        $(".cnt_input").last().val('');
+                        $(".cnt_input").last()[0].focus();
+                    } else {
+                        stock_trade(event, $(".cnt_input").last().val(), intent)
+                    }
+                })
+            } else if (intent == '매도') {
+                const table = "<div class='input-group'><input type='number' placeholder='갯수를 입력해주세요.' class='cnt_input form-control text-center'><button class='btn btn-outline-secondary'>매도하기</button></div>"
+                const bottext = `<div class='removable' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/rubybot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#DDD;border-radius:3px;'>몇 개 매도할꺼냥?</span>${table}</div></div>`;
+                $("#chatbox").append(bottext);
+                $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')})
+                $(".cnt_input ~ button").on('click', function() {
+                    if ($(".cnt_input").last().val() <= 0) {
+                        alert("1 이상의 숫자를 기입해달라 냥!!")
+                        $(".cnt_input").last().val('')
+                        $(".cnt_input").last()[0].focus();
+                    } else {
+                        stock_trade(event, $(".cnt_input").last().val(), intent)
+                    }
+                })
+            } else {    
+                waiter();
+                ajaxing({query: event + '취소'});
+            }
+        }
+
+        function canceler(id) {
+            waiter();
+            ajaxing({query: "해당 종목을 취소했다 냥", cancel: id});
+        }
+
+        function waiter() {
+            const botwait = "<div id='wait' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/rubybot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#d9eaff;border-radius:3px;'>로딩중이다 냥&nbsp;<i class='fa-solid fa-spinner fa-spin-pulse'></i></span></div></div>";
+            $chatbox.append(botwait);
+            $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')})
+        }
+
+        function ajaxing(jsonData) {
+            $(".removable").hide();
+
+            $.ajax({
+                url: 'http://127.0.0.10:5000/query/ruby',
+                type: "POST",
+                data: JSON.stringify(jsonData),
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                crossDomain: true,
+
+                success: function(response){
+                    $chatbox = $("#chatbox");
+
+                    $("#wait").remove();
+                    
+                    table = ""
+                    graph = ""
+                    if (response.information != undefined) {
+                        graph = response.information.그래프
+                        event_name = response.information.종목
+                        delete response.information.종목
+                        delete response.information.그래프
+                        table = "<table class='table text-center'>"
+                        table += `<tr><td class='border-0'></td><th colspan='2' class='display-5'>${event_name}</th><td class='border-0'></td></tr>`
+                        table += `<tr><td class='border-0'></td><td colspan='2'><img src='${graph}'></td><td class='border-0'></td></tr>`
+                        for (const key in response.information) {
+                            table += `<tr><td class='border-0'></td><th>${key}</th><td class='ft-bold'>${response.information[key]}</td><td class='border-0'></td></tr>`
+                        }
+                        table += "</table>"
+                    } else if (response.many != undefined) {
+                        table = "<table class='table table-hover text-center removable'>"
+                        for (const event in response.many) {
+                            table += `<tr onclick="selection('${response.many[event][1]}')" style="cursor: pointer;"><td>${response.many[event][0]}</td></tr>`
+                        }
+                        table += "</table>"
+                    } else if (response.eor_finder != undefined) {
+                        table = "<div class='m-5'>"
+                        for (const eor_selector in response.eor_finder) {
+                            table += `<button class='btn btn-outline-secondary m-1' onclick="eor_select('${response.eor_finder[eor_selector]['name']}', '${response.eor_finder[eor_selector]['eor']}')">${response.eor_finder[eor_selector]['name']}</button></td>`
+                        }
+                        table += "</div>"
+                    } else if (response.eor != undefined) {
+                        table = "<table class='table table-striped text-center'>"
+                        table += `<thead><tr><th>오늘의 ${response.country} 환율</th><th></th><th>${response.eor}원</th><tr></thead>`
+                        table += "<tbody>"
+                        table += `<tr><td colspan='3' style='font-weight: bold;'>환율 계산기 (${response.currency} -> KRW)</td><tr>`
+                        table += `<tr><td class='input-group'><input type='number' class='form-control text-center usd_left' onkeyup='usd_krw(${response.eor})'><span class="input-group-text">${response.unit}${response.currency}</span></td><td><i class="fa-solid fa-arrow-right"></i></td><td class='input-group'><input type='number' class='form-control text-center krw_right' disabled><span class="input-group-text">KRW</span></td><tr>`
+                        table += `<tr><td colspan='3' style='font-weight: bold;'>환율 계산기 (KRW -> ${response.currency})</td><tr>`
+                        table += `<tr><td class='input-group'><input type='number' class='form-control text-center krw_left' onkeyup='krw_usd(${response.eor})'><span class="input-group-text">KRW</span></td><td><i class="fa-solid fa-arrow-right"></i></td><td class='input-group'><input type='number' class='form-control text-center usd_right' disabled><span class="input-group-text">${response.unit}${response.currency}</span></td><tr>`
+                        table += "</tbody></table>"
+                    } else if (response.stock_today != undefined) {
+                        table = "<table class='table text-center'>"
+                        table += `<tr><th><input type='hidden' value='${JSON.stringify(response.stock_today)}'><select class='st_selector'><option selected><strong>KOSDAQ</strong></option><option><strong>KOSPI</strong></option><option><strong>KOSPI200</strong></option></select></th>`
+                        table += `<td><img src='${response.stock_today['KOSDAQ'].그래프}'></td></tr>`
+                        table += `<tr><th>지수</th><td>${response.stock_today['KOSDAQ'].지수}</td></tr>`
+                        table += `<tr><th>변화</th><td>${response.stock_today['KOSDAQ'].변화}</td></tr>`
+                        table += `<tr><th>변화%</th><td>${response.stock_today['KOSDAQ'].변화퍼센트}</td></tr>`
+                        table += "</table>"
+                    } else if (response.hot != undefined) {
+                        table = "<table class='table table-hover text-center'>"
+                        table += "<thead><th>종목명</th><th>가격</th><th>상승/하락</th><th>변동폭</th></thead><tbody>"
+                        for (const event in response.hot) {
+                            if (response.hot[event].변동퍼센트[0] == '+') {
+                                table += `<tr class='text-danger' onclick="selection('${response.hot[event].코드}')" style="cursor: pointer;"><th>${event}</th><td>${response.hot[event].가격}</td><td>${response.hot[event].변동}</td><td>${response.hot[event].변동퍼센트}</td></tr>`
+                            } else if (response.hot[event].변동퍼센트[0] == '-') {
+                                table += `<tr class='text-primary' onclick="selection('${response.hot[event].코드}')" style="cursor: pointer;"><th>${event}</th><td>${response.hot[event].가격}</td><td>${response.hot[event].변동}</td><td>${response.hot[event].변동퍼센트}</td></tr>`
+                            } else {
+                                table += `<tr onclick="selection('${response.hot[event].코드}')" style="cursor: pointer;"><th>${event}</th><td>${response.hot[event].가격}</td><td>${response.hot[event].변동}</td><td>${response.hot[event].변동퍼센트}</td></tr>`
+                            }
+                        }
+                        table += "</tbody></table>"
+                    } else if (response.word != undefined) {
+                        table = "<div class='m-5'>"
+                        for (const word in response.word) {
+                            table += `<button class='btn btn-outline-secondary m-1' onclick='word_search($(this).text())'>${response.word[word]}</button></td>`
+                        }
+                        table += "</div>"
+                    } else if (response.explain != undefined) {
+                        table = `<table class='table text-center'><tr><td></td></tr><tr><td>${response.explain}</td></tr></table>`
+                    } else if (response.event != undefined) {
+                        table = "<table class='table table-hover text-center removable todo_list'>"
+                        for (const event in response.list) {
+                            table += `<tr style="cursor: pointer;"><td><input type='hidden' value='${response.event}'>${response.list[event]}</td></tr>`
+                        }
+                        table += "</table>"
+                    } else if (response.order_list != undefined) {
+                        table = "<table class='table table-hover text-center removable'>"
+                        table += "<thead><tr><th>종목코드</th><th>종목명</th><th>타입</th><th>갯수</th><th>가격</th></tr></thead>"
+                        table += "<tbody>"
+                        for (const order in response.order_list) {
+                            if (response.order_list[order][3] > 0) {
+                                table += `<tr onclick='canceler("${response.order_list[order][0]}")'><td>${response.order_list[order][1]}</td><td>${response.order_list[order][2]}</td><td>매수</td><td>${response.order_list[order][3]}</td><td>${response.order_list[order][4]}</td></tr>`
+                            } else {
+                                table += `<tr onclick='canceler("${response.order_list[order][0]}")'><td>${response.order_list[order][1]}</td><td>${response.order_list[order][2]}</td><td>매도</td><td>${-1 * response.order_list[order][3]}</td><td>${-1 * response.order_list[order][4]}</td></tr>`
+                            }
+                        }
+                        table += "</tbody>"
+                        table += "</table>"
+                    } else if (response.show_me_own != undefined) {
+                        if (response.show_me_own[3] > 0) {
+                            table += `<table class='table text-center removable'><thead><tr><td>종목코드</td><td>종목명</td><td>총 보유 갯수</td></tr></thead><tbody><tr><td>${response.show_me_own[0]}</td><td>${response.show_me_own[1]}</td><td class='text-danger'>${response.show_me_own[2]}(+${response.show_me_own[3]})</td></tr></tbody></table>`
+                        } else {
+                            table += `<table class='table text-center removable'><thead><tr><td>종목코드</td><td>종목명</td><td>총 보유 갯수</td></tr></thead><tbody><tr><td>${response.show_me_own[0]}</td><td>${response.show_me_own[1]}</td><td class='text-primary'>${response.show_me_own[2]}(${response.show_me_own[3]})</td></tr></tbody></table>`
+                        }
+                    }
+
+                    const bottext = "<div class='mb-5' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/rubybot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#d9eaff;border-radius:3px;'>" + response.Answer + "</span><div class='ml-3'>" + table + "</div></div></div>"
+                    $chatbox.append(bottext);
+                    
+                    // 스크롤 조정하기
+                    $chatbox.animate({scrollTop: $chatbox.prop('scrollHeight')})
+
+                    $(".todo_list tbody tr").children().each(function() {
+                        $(this).on('click', function() {
+                            send_todo($(this).find('input').val(), $(this).text())
+                        })
+                    })
+
+                    $(".st_selector").on('change', function() {
+                        const parse_val = JSON.parse($(this).parent().find('input').val())
+
+                        $(this).parent().parent().parent().parent().hide();
+
+                        $(this).parent().parent().find('img').attr('src', parse_val[$(this).val()].그래프)
+                        $(this).parent().parent().parent().find('tr:nth-child(2) td').text(parse_val[$(this).val()].지수)
+                        $(this).parent().parent().parent().find('tr:nth-child(3) td').text(parse_val[$(this).val()].변화)
+                        $(this).parent().parent().parent().find('tr:nth-child(4) td').text(parse_val[$(this).val()].변화퍼센트)
+
+                        $(this).parent().parent().parent().parent().fadeIn('slow');
+                    })
+                }
+            })
+        }
+
+        function send_message() {
+            const chattext = $("#chattext").val().trim();
+
+            // 입력한 메세지가 없으면 리턴
+            if(chattext == "") {
+                $("#chattext").focus();
+                return;
+            }
+
+            // 입력한 채팅 화면에 출력
+            $("#wait").remove();
+            const addtext = "<div style='margin:20px 0;text-align:right;'><span style='padding:10px; background-color:#f1f1f1;border-radius:3px;'>" + chattext + "</span></div>";
+            $("#chatbox").append(addtext);
+
+            // 답변 대기시간동안 로딩 말풍선 띄우기
+            const botwait = "<div id='wait' style='margin:20px 0;text-align:left;'><div class='imgcon'><img src='/static/rubybot.jpg'></div><div class='textcon'><span style='padding:10px 20px;background-color:#d9eaff;border-radius:3px;'>로딩중이다 냥&nbsp;<i class='fa-solid fa-spinner fa-spin-pulse'></i></span></div></div>";
+            $chatbox.append(botwait);
+
+            // 먼저 입력했던 것은 지우기
+            $("#chattext").val("");
+            $("#chattext").focus();
+
+            // ajax
+            ajaxing({query: chattext})
+        }
+    </script>
+    <style>
+        input:focus::placeholder{
+            color:transparent;
+        }
+        td, th {
+            vertical-align : middle;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .textcon{
+            padding: 20px 0 0 26px;
+        }
+        .imgcon{
+            width: 70px;
+            height: 70px; 
+            border-radius: 70%;
+            overflow: hidden;
+            float: left;
+            padding:5px;
+            margin-right: 15px;
+        }
+        img{
+            width: 90%;
+            height: 90%;
+            object-fit: cover;
+        }
+        .chatheader {
+            left: 0;
+            top: 0;
+            width: 100%;
+            color: #000;
+            text-align: center;
+            padding-top:10px;
+            border-radius: 7px;
+            height: 10%;
+        }
+        .chatfooter {
+            left: 0;
+            bottom: 0;
+            width: 93%;
+            padding:10px 0;
+            margin: 10px 0 45px 28px;
+            color: #000;
+            text-align: center;
+            background-color:#fff;
+            border-radius: 7px;
+        }
+        .con{
+            width:70%; 
+            margin:0 auto;
+            border-radius: 7px;
+            box-shadow: 2px 2px 2px 2px gray
+        }
+        body{
+            margin-top:2%;
+            text_align: center;
+            padding: 30px;
+        }
+        #chatbox{
+            border-radius: 7px;
+            background-color: #fff;
+            margin: 30px;
+            height:75%;
+            margin-top:20px;
+            padding:5px;
+            padding-right: 25px;
+            overflow-y:scroll;
+            overflow-x:hidden;
+            max-height:100vh;
+        }
+        #chatbox::-webkit-scrollbar {
+            width: 10px;
+        }
+        #chatbox::-webkit-scrollbar-thumb {
+            background-color: grey;
+            border-radius: 10px;
+        }
+        #chatbox::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #chattext{
+            padding:30px;
+        }
+        .icon{
+            text-align: center;
+            font-size:20px; 
+            padding: 10px; 
+            background-color:#fff;
+            width: 50px;
+            border-radius: 50%;
+        }
+        #chattext:focus {
+            margin-left:10px;
+            outline: none;
+            border: none;
+        }
+        .line-box {
+            position: relative;
+            width: 97%;
+            height: 2px;
+          }
+        .line {
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(37, 37, 37, 0.295);
+            transition: ease .6s;
+          }
+        input:focus + .line-box .line {
+            width: 97%;
+          }
+        #men2{
+            left: -15.3%;
+        }
+         
+          
+    </style>
+{% endblock %}
+
+{% block contents %}
+    
+    <body class='container' style='overflow: hidden; margin-top: -1%; position: absolute; top: 0; bottom: 0; left: 0; right: 0;'>
+        <div style='position: relative;'>
+            <nav class='menu' id='men2'>
+                <ul class="drop-down closed" style='position: fixed'>
+                  <li><a href="#" class="nav-button"><i class="fa-solid fa-angle-down"></i></a></li>
+                  <li><a href="{% url 'myapp:home' %}">Home</a></li>
+                  <li><a href="{% url 'myapp:storage' %}">My Storage</a></li>
+                </ul>
+            </nav>
+        </div>
+    
+        <div style="padding:5px; background-color:rgba(94, 94, 94, 0.164);" class='con h-100'>
+            <div class="chatheader">
+                <div width="100%" border="0">
+                    <div style='padding-left: 47%;'>
+                        <div width="50%" align="left" class='icon'>
+                            <i class="fa-solid fa-robot fa-bounce"></i>
+                        </div>
+                        <div class='dotcon'>
+                            <div class="dot-elastic"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="chatbox">
+            </div>
+            <div class="chatfooter">
+                <table width="100%">
+                    <tr>
+                        <td width="88%">
+                            <input type='text' id="chattext" style="padding:5px 0;width:100%;border:none;">
+                            <div class="line-box">
+                                <div class="line"></div>
+                              </div>
+                        </td>
+                        <td width="10%" style='padding-right:10px;'>
+                            <button type='button' class="btn btn-dark" id="sendbtn" style="padding:5px 0;width:100%;" >send</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+          
+    </body>
+{% endblock %}
